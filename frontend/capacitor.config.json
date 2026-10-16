@@ -1,0 +1,12 @@
+{
+  "appId": "com.audioconverter.app",
+  "appName": "Audio & Video Converter",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "http",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
