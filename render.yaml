@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: audio-converter-backend
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: TEMP_DIR
+        value: /tmp/reel_converter
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: MAX_DOWNLOAD_SIZE_MB
+        value: "100"
+      - key: DOWNLOAD_TIMEOUT_SECONDS
+        value: "180"
+      - key: CONVERSION_TIMEOUT_SECONDS
+        value: "180"
