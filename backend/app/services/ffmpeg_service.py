@@ -41,7 +41,13 @@ class FFmpegService:
             self._ffmpeg_bin = settings.FFMPEG_PATH
             return self._ffmpeg_bin
 
-        # 1. Prioritize imageio-ffmpeg as it is bundled with full codec/format support (mp3, aac, etc.)
+        # 1. System PATH ffmpeg (installed in OS / Docker container with ffprobe)
+        system_ffmpeg = shutil.which("ffmpeg")
+        if system_ffmpeg:
+            self._ffmpeg_bin = system_ffmpeg
+            return self._ffmpeg_bin
+
+        # 2. imageio-ffmpeg fallback
         try:
             import imageio_ffmpeg
             exe = imageio_ffmpeg.get_ffmpeg_exe()
@@ -50,12 +56,6 @@ class FFmpegService:
                 return self._ffmpeg_bin
         except ImportError:
             pass
-
-        # 2. System PATH ffmpeg
-        system_ffmpeg = shutil.which("ffmpeg")
-        if system_ffmpeg:
-            self._ffmpeg_bin = system_ffmpeg
-            return self._ffmpeg_bin
 
         raise FFmpegError("FFmpeg executable could not be found. Please ensure FFmpeg is installed.")
 

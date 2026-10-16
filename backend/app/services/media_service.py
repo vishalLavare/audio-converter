@@ -66,7 +66,7 @@ class MediaService:
 
         ydl_opts = {
             "outtmpl": output_template,
-            "format": "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo+bestaudio/best",
+            "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080][acodec!=none]/best[acodec!=none]/bestvideo+bestaudio/best",
             "merge_output_format": "mp4",
             "max_filesize": max_bytes,
             "socket_timeout": 30,
@@ -74,9 +74,14 @@ class MediaService:
             "no_warnings": True,
             "nocheckcertificate": False,
             "noplaylist": True,
+            "http_headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+                "Accept-Language": "en-US,en;q=0.9",
+            },
         }
         if ffmpeg_bin:
-            ydl_opts["ffmpeg_location"] = ffmpeg_bin
+            # yt-dlp locates both ffmpeg and ffprobe if given the directory
+            ydl_opts["ffmpeg_location"] = str(Path(ffmpeg_bin).parent)
 
         extracted_info = {}
         platform_label = platform.capitalize() if platform and platform != "auto" else "platform"

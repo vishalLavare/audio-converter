@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Music, Sparkles, ShieldCheck, AlertCircle, Video, Layers } from 'lucide-react';
+import { Music, Sparkles, ShieldCheck, AlertCircle, Video, Layers, Server } from 'lucide-react';
 import PlatformSelector from './components/PlatformSelector';
 import UrlInput from './components/UrlInput';
 import QualitySelector from './components/QualitySelector';
 import Progress from './components/Progress';
 import AudioPlayer from './components/AudioPlayer';
 import DownloadButton from './components/DownloadButton';
+import ServerSettingsModal from './components/ServerSettingsModal';
 import { InstagramIcon, YouTubeIcon, FacebookIcon } from './components/BrandIcons';
 import { convertMedia, getJobStatus, getDownloadUrl, getVideoDownloadUrl, getFullscreenVideoDownloadUrl } from './api';
 import { Capacitor } from '@capacitor/core';
@@ -67,7 +68,7 @@ export default function App() {
   const [videoDownloadUrl, setVideoDownloadUrl] = useState(null);
   const [fullscreenMetadata, setFullscreenMetadata] = useState(null);
   const [fullscreenDownloadUrl, setFullscreenDownloadUrl] = useState(null);
-
+  const [isServerModalOpen, setIsServerModalOpen] = useState(false);
 
   const pollIntervalRef = useRef(null);
 
@@ -189,14 +190,24 @@ export default function App() {
 
       {/* Main Container */}
       <main className="relative z-10 container mx-auto px-4 py-6 sm:py-12 max-w-2xl mobile-safe-top mobile-safe-bottom">
-        {/* Top Control Bar with Status */}
-        <div className="flex items-center justify-center mb-6">
+        {/* Top Control Bar with Status & Server Button */}
+        <div className="flex items-center justify-between mb-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm backdrop-blur-md">
             <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
             <Layers className="w-3.5 h-3.5 text-slate-400" />
             <span className="hidden sm:inline">Universal Media Downloader</span>
             <span className="sm:hidden">Downloader</span>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsServerModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-all shadow-sm backdrop-blur-md active:scale-95"
+            title="Backend Server Settings"
+          >
+            <Server className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Server</span>
+          </button>
         </div>
 
         {/* Header */}
@@ -310,6 +321,12 @@ export default function App() {
 
 
       </main>
+
+      {/* Backend Server Settings Modal */}
+      <ServerSettingsModal
+        isOpen={isServerModalOpen}
+        onClose={() => setIsServerModalOpen(false)}
+      />
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-slate-800/60 py-6 text-center text-xs text-slate-500">
