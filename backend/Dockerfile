@@ -12,11 +12,11 @@ WORKDIR /app
 RUN mkdir -p /tmp/reel_converter && chmod 777 /tmp/reel_converter
 
 # Copy requirements and install
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend application
-COPY app ./app
+COPY backend/app ./app
 
 # Expose FastAPI / Render ports
 EXPOSE 8000
