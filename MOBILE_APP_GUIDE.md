@@ -23,8 +23,8 @@ This application has been configured with **Capacitor**, transforming the React 
                             ▼
 ┌────────────────────────────────────────────────────────┐
 │             Backend Server (FastAPI + FFmpeg)          │
+│   • Live Cloud Host: https://audio-converter-7v1g.onrender.com
 │   • Local Wi-Fi Network (http://192.168.x.x:8000)      │
-│     OR Cloud Host (e.g., Render, Railway, AWS, VPS)    │
 │   • Runs yt-dlp media extraction & FFmpeg transcoding   │
 └────────────────────────────────────────────────────────┘
 ```

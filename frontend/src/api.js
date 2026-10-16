@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { Capacitor } from '@capacitor/core';
 
+export const DEFAULT_CLOUD_BACKEND = 'https://audio-converter-7v1g.onrender.com';
+
 export const getBaseUrl = () => {
   const customUrl = localStorage.getItem('audio_converter_api_url');
   if (customUrl && customUrl.trim()) {
@@ -12,9 +14,12 @@ export const getBaseUrl = () => {
     const trimmed = envUrl.trim().replace(/\/+$/, '');
     return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
   }
+  // Mobile APK (Capacitor) or GitHub Pages live deployment -> use cloud backend
   if (Capacitor.isNativePlatform()) {
-    // Default fallback for Android Emulator / local network dev
-    return 'http://10.0.2.2:8000/api';
+    return `${DEFAULT_CLOUD_BACKEND}/api`;
+  }
+  if (typeof window !== 'undefined' && window.location && (window.location.hostname.includes('github.io') || (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'))) {
+    return `${DEFAULT_CLOUD_BACKEND}/api`;
   }
   return '/api';
 };
@@ -36,18 +41,26 @@ export const getSavedServerUrl = () => {
 };
 
 export const testServerConnection = async (url) => {
-  const target = (url && url.trim()) ? url.trim().replace(/\/+$/, '') : getBaseUrl().replace(/\/api$/, '');
-  const testEndpoint = target.endsWith('/api') ? `${target.replace(/\/api$/, '')}/health` : `${target}/health`;
+  const raw = (url && url.trim()) ? url.trim().replace(/\/+$/, '') : getBaseUrl().replace(/\/api$/, '');
+  const cleanTarget = raw.endsWith('/api') ? raw.replace(/\/api$/, '') : raw;
+  
+  // Try 1: /api/health
   try {
-    const res = await axios.get(testEndpoint, { timeout: 6000 });
+    const res = await axios.get(`${cleanTarget}/api/health`, { timeout: 8000 });
     return { ok: true, data: res.data };
-  } catch (err) {
-    // Also try testing root /docs or /api directly
+  } catch (err1) {
+    // Try 2: /health
     try {
-      const res = await axios.get(`${target}/docs`, { timeout: 6000 });
-      return { ok: true, data: 'Connected' };
-    } catch {
-      throw new Error(err.response?.data?.detail || err.message || 'Could not connect to server');
+      const res = await axios.get(`${cleanTarget}/health`, { timeout: 8000 });
+      return { ok: true, data: res.data };
+    } catch (err2) {
+      // Try 3: / or /docs
+      try {
+        const res = await axios.get(`${cleanTarget}/docs`, { timeout: 8000 });
+        return { ok: true, data: 'Connected' };
+      } catch {
+        throw new Error(err1.response?.data?.detail || err1.message || 'Could not connect to server');
+      }
     }
   }
 };

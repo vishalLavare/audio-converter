@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Music, Sparkles, ShieldCheck, AlertCircle, Video, Layers, Settings } from 'lucide-react';
+import { Music, Sparkles, ShieldCheck, AlertCircle, Video, Layers } from 'lucide-react';
 import PlatformSelector from './components/PlatformSelector';
 import UrlInput from './components/UrlInput';
 import QualitySelector from './components/QualitySelector';
 import Progress from './components/Progress';
 import AudioPlayer from './components/AudioPlayer';
 import DownloadButton from './components/DownloadButton';
-import ServerSettingsModal from './components/ServerSettingsModal';
 import { InstagramIcon, YouTubeIcon, FacebookIcon } from './components/BrandIcons';
 import { convertMedia, getJobStatus, getDownloadUrl, getVideoDownloadUrl, getFullscreenVideoDownloadUrl } from './api';
 import { Capacitor } from '@capacitor/core';
@@ -68,7 +67,7 @@ export default function App() {
   const [videoDownloadUrl, setVideoDownloadUrl] = useState(null);
   const [fullscreenMetadata, setFullscreenMetadata] = useState(null);
   const [fullscreenDownloadUrl, setFullscreenDownloadUrl] = useState(null);
-  const [showSettings, setShowSettings] = useState(false);
+
 
   const pollIntervalRef = useRef(null);
 
@@ -190,29 +189,14 @@ export default function App() {
 
       {/* Main Container */}
       <main className="relative z-10 container mx-auto px-4 py-6 sm:py-12 max-w-2xl mobile-safe-top mobile-safe-bottom">
-        {/* Top Control Bar with Status & Server Config */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm backdrop-blur-md">
+        {/* Top Control Bar with Status */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-semibold text-slate-300 shadow-sm backdrop-blur-md">
             <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
             <Layers className="w-3.5 h-3.5 text-slate-400" />
             <span className="hidden sm:inline">Universal Media Downloader</span>
             <span className="sm:hidden">Downloader</span>
           </div>
-
-          <button
-            type="button"
-            onClick={async () => {
-              if (Capacitor.isNativePlatform()) {
-                try { await Haptics.impact({ style: ImpactStyle.Light }); } catch {}
-              }
-              setShowSettings(true);
-            }}
-            title="Backend Server Settings"
-            className="p-2 px-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white transition-all shadow-sm backdrop-blur-md cursor-pointer flex items-center gap-1.5 text-xs"
-          >
-            <Settings className="w-3.5 h-3.5" />
-            <span className="text-[11px] font-medium">Server</span>
-          </button>
         </div>
 
         {/* Header */}
@@ -324,11 +308,7 @@ export default function App() {
           </p>
         </aside>
 
-        {/* Mobile / Web Server Configuration Modal */}
-        <ServerSettingsModal
-          isOpen={showSettings}
-          onClose={() => setShowSettings(false)}
-        />
+
       </main>
 
       {/* Footer */}

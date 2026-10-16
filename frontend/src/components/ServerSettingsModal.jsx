@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Server, CheckCircle2, AlertCircle, RefreshCw, X } from 'lucide-react';
-import { getSavedServerUrl, setCustomServerUrl, testServerConnection, getBaseUrl } from '../api';
+import { Settings, Server, CheckCircle2, AlertCircle, RefreshCw, X, Cloud, Laptop, Smartphone } from 'lucide-react';
+import { getSavedServerUrl, setCustomServerUrl, testServerConnection, getBaseUrl, DEFAULT_CLOUD_BACKEND } from '../api';
 
 export default function ServerSettingsModal({ isOpen, onClose }) {
   const [serverUrl, setServerUrl] = useState('');
@@ -80,10 +80,45 @@ export default function ServerSettingsModal({ isOpen, onClose }) {
               className="w-full px-4 py-3 bg-slate-950/80 border border-slate-800 focus:border-purple-500 rounded-xl text-sm font-mono text-slate-100 placeholder:text-slate-600 focus:outline-none transition-colors"
             />
           </div>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => {
+                setServerUrl(DEFAULT_CLOUD_BACKEND);
+                setTestResult(null);
+              }}
+              className="px-2.5 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 text-[11px] font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Cloud className="w-3.5 h-3.5" />
+              <span>Render Cloud</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setServerUrl('http://localhost:8000');
+                setTestResult(null);
+              }}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-[11px] font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Laptop className="w-3.5 h-3.5" />
+              <span>Localhost (8000)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setServerUrl('http://10.0.2.2:8000');
+                setTestResult(null);
+              }}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-[11px] font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>Android Emulator</span>
+            </button>
+          </div>
           <p className="text-[11px] text-slate-500">
-            For local Wi-Fi testing: use your PC's IP (e.g. <code className="text-slate-400">http://192.168.x.x:8000</code>).
+            For live cloud: use <code className="text-purple-400">{DEFAULT_CLOUD_BACKEND}</code>.
             <br />
-            For Android Emulator: use <code className="text-slate-400">http://10.0.2.2:8000</code>.
+            For local Wi-Fi testing: use your PC's IP (e.g. <code className="text-slate-400">http://192.168.x.x:8000</code>).
           </p>
         </div>
 
