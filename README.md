@@ -1,12 +1,12 @@
 # 🎬 Universal Video & Audio Converter (Instagram • YouTube • Facebook)
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Online%20Preview-brightgreen?style=for-the-badge&logo=googlechrome)](https://vishallavare.github.io/audio-converter/)
-[![Render Backend](https://img.shields.io/badge/Render%20Backend-Live-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://audio-converter-7v1g.onrender.com/api/health)
-[![API Docs](https://img.shields.io/badge/Swagger%20UI-Live%20Docs-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://audio-converter-7v1g.onrender.com/docs)
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Active-blue?style=for-the-badge&logo=github)](https://vishallavare.github.io/audio-converter/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+<!-- [![Render Backend](https://img.shields.io/badge/Render%20Backend-Live-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://audio-converter-7v1g.onrender.com/api/health) -->
+<!-- [![API Docs](https://img.shields.io/badge/Swagger%20UI-Live%20Docs-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://audio-converter-7v1g.onrender.com/docs) -->
+<!-- [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Active-blue?style=for-the-badge&logo=github)](https://vishallavare.github.io/audio-converter/) -->
+<!-- [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React%2018-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT) -->
 
 A modern, production-grade, secure, and compliant full-stack web application for downloading public media and extracting high-fidelity MP3 audio from **Instagram Reels & Videos**, **YouTube Videos & Shorts**, and **Facebook Reels & Watch**.
 
@@ -17,12 +17,13 @@ A modern, production-grade, secure, and compliant full-stack web application for
 | Component | Status | URL |
 | :--- | :--- | :--- |
 | **Frontend Web App (GitHub Pages)** | 🟢 Active | [https://vishallavare.github.io/audio-converter/](https://vishallavare.github.io/audio-converter/) |
-| **Backend API (Render Cloud)** | 🟢 Active | [https://audio-converter-7v1g.onrender.com](https://audio-converter-7v1g.onrender.com) |
-| **Swagger UI Docs** | 🟢 Active | [https://audio-converter-7v1g.onrender.com/docs](https://audio-converter-7v1g.onrender.com/docs) |
+<!-- | **Backend API (Render Cloud)** | 🟢 Active | [https://audio-converter-7v1g.onrender.com](https://audio-converter-7v1g.onrender.com) | -->
+<!-- | **Swagger UI Docs** | 🟢 Active | [https://audio-converter-7v1g.onrender.com/docs](https://audio-converter-7v1g.onrender.com/docs) | -->
 | **API Health Check** | 🟢 Healthy | [https://audio-converter-7v1g.onrender.com/api/health](https://audio-converter-7v1g.onrender.com/api/health) |
 
 > 💡 **Seamless Cloud Integration:**
-> - The Live Demo on GitHub Pages automatically connects to the live **Render cloud backend** (`https://audio-converter-7v1g.onrender.com`).
+> - The Live Demo on GitHub Pages automatically connects to the live **Render cloud backend** 
+<!-- (`https://audio-converter-7v1g.onrender.com`). -->
 > - You can also open the **"Server"** icon in the UI anytime to test connection or toggle between Render Cloud and local development (`http://localhost:8000`).
 
 ---
