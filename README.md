@@ -1,6 +1,7 @@
 # 🎬 Universal Video & Audio Converter (Instagram • YouTube • Facebook)
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Online%20Preview-brightgreen?style=for-the-badge&logo=googlechrome)](https://vishallavare.github.io/audio-converter/)
+[![Download Android APK](https://img.shields.io/badge/Download%20APK-Google%20Drive-34A853?style=for-the-badge&logo=android&logoColor=white)](https://drive.google.com/file/d/1yETWnxy6TdmzlVcEfoimEJkvrUYj7lsh/view?usp=drive_link)
 <!-- [![Render Backend](https://img.shields.io/badge/Render%20Backend-Live-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://audio-converter-7v1g.onrender.com/api/health)
 [![API Docs](https://img.shields.io/badge/Swagger%20UI-Live%20Docs-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://audio-converter-7v1g.onrender.com/docs)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Active-blue?style=for-the-badge&logo=github)](https://vishallavare.github.io/audio-converter/)
@@ -12,14 +13,19 @@ A modern, production-grade, secure, and compliant full-stack web application for
 
 ---
 
-## 🌐 Live Deployments
+## 🌐 Live Deployments & App Download
 
-| Component | Status | URL |
+| Component | Status | URL / Link |
 | :--- | :--- | :--- |
 | **Frontend Web App (GitHub Pages)** | 🟢 Active | [https://vishallavare.github.io/audio-converter/](https://vishallavare.github.io/audio-converter/) |
+| **Android Mobile App (.APK)** | 📥 Available | [Download via Google Drive](https://drive.google.com/file/d/1yETWnxy6TdmzlVcEfoimEJkvrUYj7lsh/view?usp=drive_link) |
 | **API Health Check** | 🟢 Healthy | [https://audio-converter-7v1g.onrender.com/api/health](https://audio-converter-7v1g.onrender.com/api/health) |
 <!-- | **Backend API (Render Cloud)** | 🟢 Active | [https://audio-converter-7v1g.onrender.com](https://audio-converter-7v1g.onrender.com) |
 | **Swagger UI Docs** | 🟢 Active | [https://audio-converter-7v1g.onrender.com/docs](https://audio-converter-7v1g.onrender.com/docs) | -->
+
+> 📱 **Android App Download:**
+> - You can install the native mobile app on your Android device: [**Download APK from Google Drive**](https://drive.google.com/file/d/1yETWnxy6TdmzlVcEfoimEJkvrUYj7lsh/view?usp=drive_link)
+> - For installation instructions, see the [Mobile App Guide](MOBILE_APP_GUIDE.md).
 
 > 💡 **Seamless Cloud Integration:**
 > - The Live Demo on GitHub Pages automatically connects to the live **Render cloud backend** 
