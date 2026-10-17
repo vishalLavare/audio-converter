@@ -17,9 +17,9 @@ A modern, production-grade, secure, and compliant full-stack web application for
 | Component | Status | URL |
 | :--- | :--- | :--- |
 | **Frontend Web App (GitHub Pages)** | 🟢 Active | [https://vishallavare.github.io/audio-converter/](https://vishallavare.github.io/audio-converter/) |
+| **API Health Check** | 🟢 Healthy | [https://audio-converter-7v1g.onrender.com/api/health](https://audio-converter-7v1g.onrender.com/api/health) |
 <!-- | **Backend API (Render Cloud)** | 🟢 Active | [https://audio-converter-7v1g.onrender.com](https://audio-converter-7v1g.onrender.com) |
 | **Swagger UI Docs** | 🟢 Active | [https://audio-converter-7v1g.onrender.com/docs](https://audio-converter-7v1g.onrender.com/docs) | -->
-| **API Health Check** | 🟢 Healthy | [https://audio-converter-7v1g.onrender.com/api/health](https://audio-converter-7v1g.onrender.com/api/health) |
 
 > 💡 **Seamless Cloud Integration:**
 > - The Live Demo on GitHub Pages automatically connects to the live **Render cloud backend** 
