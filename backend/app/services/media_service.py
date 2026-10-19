@@ -79,12 +79,6 @@ class MediaService:
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
                 "Accept-Language": "en-US,en;q=0.9",
             },
-            # Extractor arguments for YouTube: use mobile client APIs to avoid bot blocks on datacenter IPs
-            "extractor_args": {
-                "youtube": {
-                    "player_client": ["android", "ios", "mweb", "web"]
-                }
-            }
         }
 
         # Provide direct ffmpeg binary location to yt-dlp
@@ -106,6 +100,19 @@ class MediaService:
 
         if cookies_file:
             ydl_opts["cookiefile"] = cookies_file
+            # Authed clients that natively support cookies
+            ydl_opts["extractor_args"] = {
+                "youtube": {
+                    "player_client": ["web_embedded", "tv_downgraded", "web"]
+                }
+            }
+        else:
+            # Unauthenticated: avoid 'android' which triggers the 'Sign in to confirm you're not a bot' challenge on datacenter IPs
+            ydl_opts["extractor_args"] = {
+                "youtube": {
+                    "player_client": ["visionos", "tv", "ios", "web"]
+                }
+            }
 
         extracted_info = {}
         platform_label = platform.capitalize() if platform and platform != "auto" else "platform"

@@ -1,9 +1,10 @@
 FROM python:3.12-slim
 
-# Install system dependencies: FFmpeg and curl
+# Install system dependencies: FFmpeg, curl, and nodejs (for yt-dlp JavaScript challenge solver)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     curl \
+    nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
