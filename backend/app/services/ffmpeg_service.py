@@ -39,11 +39,12 @@ class FFmpegService:
 
         if settings.FFMPEG_PATH and os.path.isfile(settings.FFMPEG_PATH):
             self._ffmpeg_bin = settings.FFMPEG_PATH
+            self._ensure_in_path(self._ffmpeg_bin)
             return self._ffmpeg_bin
 
         # 1. System PATH ffmpeg (installed in OS / Docker container with ffprobe)
         system_ffmpeg = shutil.which("ffmpeg")
-        if system_ffmpeg:
+        if system_ffmpeg and os.path.isfile(system_ffmpeg):
             self._ffmpeg_bin = system_ffmpeg
             return self._ffmpeg_bin
 
@@ -52,12 +53,43 @@ class FFmpegService:
             import imageio_ffmpeg
             exe = imageio_ffmpeg.get_ffmpeg_exe()
             if exe and os.path.isfile(exe):
-                self._ffmpeg_bin = exe
+                # Standardize as ffmpeg or ffmpeg.exe in a dedicated bin directory
+                standard_exe = self._create_standard_ffmpeg_shim(exe)
+                self._ffmpeg_bin = standard_exe
+                self._ensure_in_path(standard_exe)
                 return self._ffmpeg_bin
         except ImportError:
             pass
 
         raise FFmpegError("FFmpeg executable could not be found. Please ensure FFmpeg is installed.")
+
+    def _ensure_in_path(self, bin_path: str):
+        """Prepends the directory containing the binary to os.environ['PATH']."""
+        try:
+            bin_dir = str(Path(bin_path).resolve().parent)
+            current_path = os.environ.get("PATH", "")
+            if bin_dir not in current_path.split(os.pathsep):
+                os.environ["PATH"] = bin_dir + os.pathsep + current_path
+        except Exception as e:
+            logger.debug(f"Could not prepend binary directory to PATH: {e}")
+
+    def _create_standard_ffmpeg_shim(self, raw_exe: str) -> str:
+        """Creates a standard 'ffmpeg' or 'ffmpeg.exe' copy/shim for tools like yt-dlp."""
+        try:
+            bin_dir = Path(settings.TEMP_DIR) / "bin"
+            bin_dir.mkdir(parents=True, exist_ok=True)
+            target_name = "ffmpeg.exe" if os.name == "nt" else "ffmpeg"
+            target_file = bin_dir / target_name
+            if not target_file.exists() or target_file.stat().st_size == 0:
+                shutil.copyfile(raw_exe, target_file)
+                try:
+                    os.chmod(target_file, 0o755)
+                except Exception:
+                    pass
+            return str(target_file)
+        except Exception as e:
+            logger.warning(f"Could not create standard ffmpeg shim: {e}. Using raw exe.")
+            return raw_exe
 
     def get_ffprobe_binary(self) -> Optional[str]:
         """Finds ffprobe if available in settings, PATH, or adjacent to ffmpeg."""

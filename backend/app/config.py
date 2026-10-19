@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     FFMPEG_PATH: str = ""
     FFPROBE_PATH: str = ""
 
+    # Optional Cookie Authentication (for YouTube bot challenge bypass on servers)
+    COOKIES_FILE: str = ""
+    YOUTUBE_COOKIES_TEXT: str = ""
+
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:

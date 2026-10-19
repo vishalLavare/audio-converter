@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
+import subprocess
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -66,7 +67,7 @@ class MediaService:
 
         ydl_opts = {
             "outtmpl": output_template,
-            "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080][acodec!=none]/best[acodec!=none]/bestvideo+bestaudio/best",
+            "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080][acodec!=none]/best[acodec!=none]/bestaudio/bestvideo+bestaudio/best",
             "merge_output_format": "mp4",
             "max_filesize": max_bytes,
             "socket_timeout": 30,
@@ -78,10 +79,33 @@ class MediaService:
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
                 "Accept-Language": "en-US,en;q=0.9",
             },
+            # Extractor arguments for YouTube: use mobile client APIs to avoid bot blocks on datacenter IPs
+            "extractor_args": {
+                "youtube": {
+                    "player_client": ["android", "ios", "mweb", "web"]
+                }
+            }
         }
+
+        # Provide direct ffmpeg binary location to yt-dlp
         if ffmpeg_bin:
-            # yt-dlp locates both ffmpeg and ffprobe if given the directory
-            ydl_opts["ffmpeg_location"] = str(Path(ffmpeg_bin).parent)
+            ydl_opts["ffmpeg_location"] = ffmpeg_bin
+
+        # Optional cookie file for YouTube bot-detection bypass
+        cookies_file = None
+        if getattr(settings, "COOKIES_FILE", None) and Path(settings.COOKIES_FILE).is_file():
+            cookies_file = settings.COOKIES_FILE
+        elif (Path(settings.TEMP_DIR) / "cookies.txt").is_file():
+            cookies_file = str(Path(settings.TEMP_DIR) / "cookies.txt")
+        elif (Path(__file__).resolve().parent.parent.parent / "cookies.txt").is_file():
+            cookies_file = str(Path(__file__).resolve().parent.parent.parent / "cookies.txt")
+        elif getattr(settings, "YOUTUBE_COOKIES_TEXT", None) and settings.YOUTUBE_COOKIES_TEXT.strip():
+            cookie_path = Path(settings.TEMP_DIR) / "youtube_cookies.txt"
+            cookie_path.write_text(settings.YOUTUBE_COOKIES_TEXT.strip(), encoding="utf-8")
+            cookies_file = str(cookie_path)
+
+        if cookies_file:
+            ydl_opts["cookiefile"] = cookies_file
 
         extracted_info = {}
         platform_label = platform.capitalize() if platform and platform != "auto" else "platform"
@@ -110,10 +134,16 @@ class MediaService:
             if "private" in err_msg:
                 raise MediaRetrievalError(f"Private {platform_label} content is not accessible.")
             elif any(k in err_msg for k in ["login", "checkpoint", "auth", "sign in", "confirm you're not a bot"]):
-                raise MediaRetrievalError(
-                    f"Unable to access this {platform_label} video. "
-                    "Please verify that the link is publicly accessible without login requirements."
-                )
+                if platform == "youtube":
+                    raise MediaRetrievalError(
+                        "YouTube bot verification is active for this cloud server IP. "
+                        "Please select 'Localhost' in Server Settings or supply YouTube cookies."
+                    )
+                else:
+                    raise MediaRetrievalError(
+                        f"Unable to access this {platform_label} video. "
+                        "Please verify that the link is publicly accessible without login requirements."
+                    )
             elif any(k in err_msg for k in ["no video formats", "no formats found", "no video", "has no video", "no media found"]):
                 raise MediaRetrievalError(
                     f"This {platform_label} post contains only photos/images without a video or audio stream. Only video posts and reels can be converted."
@@ -134,12 +164,38 @@ class MediaService:
                 f"Unable to process this {platform_label} media. Please check the link."
             )
 
-        # Locate downloaded input video file
-        candidate_files = list(output_dir.glob("input.*"))
-        if not candidate_files:
+        # Locate downloaded input media file(s), ignoring partial temp files
+        candidates = [
+            f for f in output_dir.glob("input.*")
+            if not f.name.endswith((".part", ".ytdl")) and f.is_file() and f.stat().st_size > 0
+        ]
+        if not candidates:
             raise MediaRetrievalError("Unable to retrieve the publicly accessible media.")
 
-        downloaded_file = candidate_files[0]
+        merged_mp4 = output_dir / "input.mp4"
+        if merged_mp4.exists() and merged_mp4.stat().st_size > 0:
+            downloaded_file = merged_mp4
+        else:
+            # Fallback: if separate video and audio streams downloaded without automatic merging
+            v_files = [f for f in candidates if any(k in f.name for k in ["v.", ".v", "video"])]
+            a_files = [f for f in candidates if any(k in f.name for k in ["a.", ".a", "audio", "m4a", "webm", "opus"])]
+            if v_files and a_files and ffmpeg_bin:
+                try:
+                    logger.info("Merging downloaded split video and audio streams via FFmpeg...")
+                    subprocess.run(
+                        [ffmpeg_bin, "-y", "-i", str(v_files[0]), "-i", str(a_files[0]), "-c:v", "copy", "-c:a", "aac", str(merged_mp4)],
+                        capture_output=True,
+                        timeout=60,
+                        check=True
+                    )
+                    downloaded_file = merged_mp4 if (merged_mp4.exists() and merged_mp4.stat().st_size > 0) else candidates[0]
+                except Exception as merge_err:
+                    logger.warning(f"Fallback merge failed: {merge_err}")
+                    downloaded_file = candidates[0]
+            else:
+                candidates.sort(key=lambda f: (1 if f.suffix.lower() == ".mp4" else 0, f.stat().st_size), reverse=True)
+                downloaded_file = candidates[0]
+
         if downloaded_file.stat().st_size == 0:
             raise MediaRetrievalError("Downloaded media was empty.")
 
